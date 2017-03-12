@@ -127,7 +127,7 @@ if (using == 'html'){
     
   gulp.task('browserSync', function() {
   browserSync({
-    proxy:'http://blog/build/', 
+    proxy:'http://blog2/build/', 
     notify: false,  
   });
 });
