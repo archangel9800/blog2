@@ -1,10 +1,11 @@
 <?php
+session_start();
 use library\Url;
 
 function __autoload($className){
     $fileName = 'core/'.str_replace('\\', '/', $className).'.class.php';
    if(!file_exists($fileName)){
-        throw new Exception('Not found', '404');
+        throw new Exception('Class not found');
     }
     require_once $fileName;
 }
@@ -25,14 +26,19 @@ if(is_null($actionName)){
 }
 
 try{
+    $fileName = 'core/'.str_replace('\\', '/', $controller).'.class.php';
+    if(!file_exists($fileName)){
+        throw new library\HttpException('Not found', '404');
+    }
     $controller = new $controller();
-    
     if(!method_exists($controller,$action)){
-        throw new Exception('Not found', '404');
+        throw new library\HttpException('Not found', '404');
     }
     $controller->$action();
-}catch(Exception $e){
+}catch(\library\HttpException $e){
     header("HTTP/1.1 ".$e->getCode()." ".$e->getMessage());
-    die('page not found!');
+    die('Page not found!');
+}catch(Exception $e){
+    die($e->getMessage());
 }
 
